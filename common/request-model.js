@@ -168,7 +168,7 @@ export default ({
   Request.attachCollection(RequestsCollection)
 
   // Create the schema for a request
-  RequestsCollection.attachSchema(
+  Request.attachSchema(
     new SimpleSchema({
       requesterId: {
         type: String,
