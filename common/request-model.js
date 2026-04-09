@@ -128,32 +128,33 @@ export default ({
     /**
      * Accept the request
      */
-    accept() {
-      acceptHooks[this.objectType].forEach((hook) => {
-        hook.call(this)
-      })
-      this.update({ $set: { acceptedAt: ServerTime.date() } })
+    async accept() {
+      const hooks = acceptHooks[this.objectType] || []
+      for (const hook of hooks) {
+        await hook.call(this)
+      }
+      await RequestsCollection.updateAsync(this._id, { $set: { acceptedAt: ServerTime.date() } })
     }
 
     /**
      * Deny the request
      */
-    deny() {
-      this.update({ $set: { deniedAt: ServerTime.date() } })
+    async deny() {
+      return RequestsCollection.updateAsync(this._id, { $set: { deniedAt: ServerTime.date() } })
     }
 
     /**
      * Ignore the request so that it can be accepted or deniedAt later
      */
-    ignore() {
-      this.update({ $set: { ignoredAt: ServerTime.date() } })
+    async ignore() {
+      return RequestsCollection.updateAsync(this._id, { $set: { ignoredAt: ServerTime.date() } })
     }
 
     /**
      * Cancel the request
      */
-    cancel() {
-      this.remove()
+    async cancel() {
+      return RequestsCollection.removeAsync(this._id)
     }
 
     /**
